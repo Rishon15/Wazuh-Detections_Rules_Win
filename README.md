@@ -22,8 +22,8 @@ For each MITRE ATT&CK scenario, strict engineering lifecycles are followed.
 
 | Phase | Technique | Description | Log Source |
 |---|---|---|---|
-| Discovery | T1016 | Network & System Configuration Discovery | Process Creation ( EventID = 1) |
-| Lateral Movement | T1021 | Remote Service Login | Authentication ( EventID = 4624 ) |
+| Discovery | T1016 | Network & System Configuration Discovery | Process Creation (EventID = 1) |
+| Lateral Movement | T1021 | Remote Service Login | Authentication (EventID = 4624) |
 <br>
 <br>
 
