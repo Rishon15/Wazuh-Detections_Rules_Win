@@ -20,16 +20,17 @@ For each MITRE ATT&CK scenario, strict engineering lifecycles are followed.
 
 ## Detection Portfolio
 
-| Phase | Technique | Description | Log Source |
+| Tactic | Technique | Description | Log Source |
 |---|---|---|---|
 | Discovery | T1016 | Network & System Configuration Discovery | Process Creation (EventID = 1) |
 | Lateral Movement | T1021 | Remote Service Login | Authentication (EventID = 4624) |
+| Credential Access | T1003 | Credential Dumping using pypykatz | Process Access (EventID = 10) |
 <br>
 <br>
 
 ## Tech Stack
 
 - **SIEM:** Wazuh 4.x
-- **Endpoint:** Windows 10 (Sysmon Configured)
+- **Endpoint:** Windows 10 (Sysmon Configured), Windows 11 (Enterprise)
 - **Simulation:** Atomic Red Team (PowerShell)
-- **Log Source:** Sysmon Event ID 1 (Process Creation), Event ID 3 (Network), Windows Security (4624)
+- **Log Source:** Sysmon configuration using [SwiftOnSecurity](https://github.com/SwiftOnSecurity/sysmon-config)
