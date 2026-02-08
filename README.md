@@ -22,9 +22,11 @@ For each MITRE ATT&CK scenario, strict engineering lifecycles are followed.
 
 | Tactic | Technique | Description | Log Source |
 |---|---|---|---|
-| Discovery | T1016 | Network & System Configuration Discovery | Process Creation (EventID = 1) |
-| Lateral Movement | T1021 | Remote Service Login | Authentication (EventID = 4624) |
-| Credential Access | T1003 | Credential Dumping using pypykatz | Process Access (EventID = 10) |
+| Discovery | T1016 | Network & System Configuration Discovery | Process Creation (EventID=1) |
+| Lateral Movement | T1021 | Remote Service Login | Authentication (EventID=4624) |
+| Credential Access | T1003 | Credential Dumping using pypykatz | Process Access (EventID=10) |
+| Command & Control | T1071 | C2 via web Protocols | Process Creation (EventID=1) |
+| Persistence | T1053 | Persistence via Scheduled Task | Process Creation (EventID=1) |
 <br>
 <br>
 
