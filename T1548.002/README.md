@@ -13,7 +13,7 @@ This test simulates bypassing "User Access Control" by using `reg.exe` to modify
 ![T1548.002 Before Rule image](../Evidences/T1548.002%20Before_Rule.png)
 
 - **Misinterpretation** - Default Wazuh rules depict this incident as "Suspicious Base64 Pattern" (Rule 92041, Level 10), due to it having mixed characters. It caught the format but not the intent.
-- **Misclassification** - When the registry `HKCU\Software\Classes\mscfile\shell\open\command` was modified Rule 92041 fired which flagged it as a suspicous Process relationship of low severity which is misclassification.
+- **Misclassification** - When the registry `HKCU\Software\Classes\mscfile\shell\open\command` was modified Rule 92004 fired which flagged it as a suspicous Process relationship of low severity which is misclassification.
 
 ### 3. Solution
 
