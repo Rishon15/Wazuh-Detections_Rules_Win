@@ -6,7 +6,7 @@ This technique is used by adversaries to elevate their privileges in compromised
 
 ### 1. Scenario
 
-This test simulates bypassing "User Access Control" by using `reg.exe` to modify the registry key `HKCU\Software\Classes\mscfile\shell\open\command`. They set this key to execute a malicious payload in this case `cmd.exe`. `eventvwr.msc` which has elevated privileges. it checks for specific registry keys for instructions and executes the payload bypassing the UAC prompt.
+This test simulates bypassing "User Access Control" by using `reg.exe` to modify the registry key `HKCU\Software\Classes\mscfile\shell\open\command`. The attacker sets this key to execute a malicious payload (in this case `cmd.exe`). When `eventvwr.msc` which runs with auto-elevated privileges is launched, it checks this specific registry key for instructions and executes the payload, effectively bypassing the UAC prompt.
 
 ### 2. Problem
 
