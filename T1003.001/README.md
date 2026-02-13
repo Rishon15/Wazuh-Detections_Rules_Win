@@ -2,8 +2,7 @@
 This technique is used by adversaries to dump credentials for account login or other credential materials like hashes/clear text.
  Obtained from OS caches or other memory structures, next course of action usually involves [Lateral Movement](https://attack.mitre.org/tactics/TA0008) via the dumped credentials.
  
-In this case we will be using sub-technique .001-7, which involves dumping of credentials using pypykatz which is a mimikatz implementation using python.
- Thus it can run on any OS and is not dependant on windows tools/utilities.
+In this case we will be using sub-technique .001-7, which involves dumping of credentials using pypykatz which is a mimikatz implementation using python, allowing it to run on any OS and is not dependant on windows tools/utilities.
 
 <br>
 
