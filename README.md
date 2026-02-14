@@ -5,14 +5,12 @@
 **Tools:** - Wazuh, Sysmon, Atomic Red Team and Powershell.<br>
 
 <br>
-<br>
 
 ## Project Overview
 
 This repository documents my journey in **Detection Engineering**. The goal is to go past the default Wazuh rules, to create an alert for an actionable threat based on real-world attack scenarios.<br>
 In this lab I simulate attacks using Atomic Red Team, analyze raw telemetry/logs generated, and develop custom rules according to their criticality to reduce false positives.
 
-<br>
 <br>
 
 ## Methodology
@@ -23,7 +21,6 @@ For each MITRE ATT&CK scenario, strict engineering lifecycles are followed.
 3. **Engineering** - Develop specific REGEX or XML rules to filter noise and target intent.
 4. **Validation** - Re-running the attack to validate the created rules and its effects.
 
-<br>
 <br>
 
 ## Detection Portfolio
@@ -39,7 +36,6 @@ For each MITRE ATT&CK scenario, strict engineering lifecycles are followed.
 | Privilege Escalation | T1548 | User Access Control Bypass |
 | Impact | T1490 | Clearing Backups using Windows Binaries |
 
-<br>
 <br>
 
 ## Tech Stack
