@@ -35,6 +35,8 @@ For each MITRE ATT&CK scenario, strict engineering lifecycles are followed.
 | Defense Evasion | T1070 | Clearing Windows Event Logs |
 | Privilege Escalation | T1548 | User Access Control Bypass |
 | Impact | T1490 | Clearing Backups using Windows Binaries |
+| Collection | T1560 | Data Obfuscation & Compression using Windows Binary |
+
 
 <br>
 
