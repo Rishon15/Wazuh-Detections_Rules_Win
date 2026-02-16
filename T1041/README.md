@@ -8,7 +8,7 @@ This test simulates an Adversary using native Powershell cmdlet `Invoke-WebReque
 
 ### 2. Problem
 
-![T1041 Before Rule image](../Evidences/T1041%20BEfore_Rule.png)
+![T1041 Before Rule image](../Evidences/T1041%20Before_Rule.png)
 
 - **Context Misinterpretation** - Default Wazuh rule only flags this with 92027 Rule id that fires only when `powershell.exe` instance is launched by `powershell.exe`. Which doesn't categorize this incident properly.
 - **Test Execution** - When this test is executed, it fails due to `example.com` not accepting `POST` requests, but in this case the attempt matters not its result.
