@@ -37,6 +37,7 @@ For each MITRE ATT&CK scenario, strict engineering lifecycles are followed.
 | Impact | T1490 | Clearing Backups using Windows Binaries |
 | Collection | T1560 | Data Obfuscation & Compression using Windows Binary |
 | Exfiltration | T1041 | Data Exfiltration using Windows Binary |
+| Reconnaissance | T1592.001 | Reconnaissance using Windows Cmdlet |
 
 <br>
 
