@@ -10,7 +10,7 @@ This test simulates a user opening a malicious attachment (e.g., a Word document
 
 ### 2. Problem
 
-![T1566 Before Rule Image](../Evidences/T1566%20Before_Rule.png)
+![T1566 Before Rule Image](../Evidences/T1566.001%20Before_Rule.png)
 
 - **Low Severity Alert** - The default Wazuh rule triggered a generic 'Low Severity' alert, significantly underestimating the critical nature of a download cradle.
 - **Context Failure** - Here the rule fired only due to `.ps1` file and the directory path which misses the context of payloads being downloaded from malicious external sources.
