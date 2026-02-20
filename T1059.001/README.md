@@ -2,7 +2,7 @@
 
 This technique includes abuse of command & script interpreters, used by adversaries to execute commands, scripts or binaries. Most systems come with built-in command line interfaces and scripting capabilities which makes it easy for the attackers to take advantage of this capability to execute commands by obfuscating it to evade detection.
 
-## [T1059.001](https://attack.mitre.org/techniques/T1059/001/)
+## [T1059.001](https://attack.mitre.org/techniques/T1059/001/): Execution of scripts via Data Obfuscation
 
 ### 1. Scenario
 
