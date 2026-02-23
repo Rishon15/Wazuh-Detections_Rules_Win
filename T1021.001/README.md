@@ -1,11 +1,9 @@
-# T1021
+# [T1021](https://attack.mitre.org/techniques/T1021/)
 
 It is the MITRE ATT&CK corresponding to [Remote Services: Remote Desktop Protocol](https://attack.mitre.org/techniques/T1021/001/). 
 Adversaries use this to pivot/lateral move using compromised credentials to gain access. Other instances include gaining persistence in network as an authorized user in a domain.
 
-<br>
-
-## T1021.001: Remote Desktop Protocol/Service
+## [T1021.001](https://attack.mitre.org/techniques/T1021/001/): Lateral Movement via Remote Desktop Protocol/Service
 
 ### 1. Scenario
 This test simulates a lateral movement attempt to a Domain Controller via **Remote Desktop Protocol** feature of Windows using compromised credentials. 
@@ -15,7 +13,6 @@ In the environment setup for this test the user executing the RDP to domain cont
 
 ![T1021.001-1 Before_Rule](../Evidences/T1021.001-1%20Before_Rule.png)
 
-After the test is executed, two key observations are made:
 1. **Access Denied** - as the simulated user (Victim_User) is not included in the lists of users with "Allow Logon Locally" permission on the Domain Controller, EventID 4625 is generated for Failed Logon. This then triggers the ruleid
 60122 to fire due to EeventID 4625.
 2. **NTLM** - On further inspection of conditions that trigger rule id 92657, we find that this rule triggers when NTLM is used to authenticate to a service or device. In this case the user uses compromised credentials together with the IP address instead of the domain name to authenticate.
@@ -35,7 +32,9 @@ I rejected relying on the "Logon Failure" (Rule 60122) because in this case it o
 - **Filter 3**:  Target Network (Type 3) and Remote Interactive (Type 10) logons to focus on external connections.
 
 ### 4. Custom Rule
-I implemented the following rule by adding it to `local_rules.xml`:
+
+#### Before Audit
+
 ```xml
 <group name="windows, lateral_movement,">
   <rule id="100055" level="10">
@@ -50,8 +49,29 @@ I implemented the following rule by adding it to `local_rules.xml`:
 </group>
 ```
 
+#### After Audit
+
+```xml
+<group name="windows, sysmon, lateral_movement,">
+  
+  <rule id="101000" level="12">
+    <if_sid>92657, 60106</if_sid> <field name="win.eventdata.lmPackageName" type="pcre2">(?i)NTLM</field>
+    <field name="win.eventdata.logonType">^3$|^10$</field>
+    <field name="win.eventdata.targetUserName">^Administrator$|^Victim_User$</field>
+    <description>Suspicious NTLM Authentication by Privileged User (Potential Pass-the-Hash or RDP via IP)</description>
+    <mitre>
+      <id>T1021.001</id>
+      <id>T1550.002</id>
+    </mitre>
+  </rule>
+
+</group>
+
+```
+
 ### 5. Result
-Upon re-executing the attack:
+
+#### Before Audit
 
 ![T1021.001-1 After_Rule](../Evidences/T1021.001-1%20After_Rule.png)
 
@@ -59,4 +79,8 @@ Upon re-executing the attack:
 2. **Accuracy**: The alert correctly identifies the source IP, the compromised user (Victim_User) and the use of weak NTLM protocol.
 3. **Noise Reduction**: Background traffic from valid services (here DWM-2 and UMFD-2) was successfully ignored.
 
+#### After Audit
 
+- **Elevates threat visibility** - Upgraded the alert severity from Level 10 to Level 12 to accurately reflect the critical danger of a Pass-the-Hash (PtH) attack or compromised Administrator account.
+
+- **Drives immediate response** - Correctly categorizes the event as a severe attack, signaling to the SOC that immediate incident response (such as host isolation and credential rotation) is required.
