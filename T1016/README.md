@@ -31,6 +31,9 @@ To detect the intent rather than just the tools, I implemented a custom rule -
 
 
 ### 4. Custom Rule
+
+#### Before Audit
+
 Regex rule to detect and have elevated alert level
 ```xml
 <group name="windows,sysmon,">
@@ -51,8 +54,37 @@ This rule fires on the following conditions:
 
 This behavior indicates that the attacker has gained access to the system and is actively enumerating the network environment.
 
+#### After Audit
+
+```xml
+<group name="windows, sysmon, discovery,">
+  
+  <rule id="100900" level="8">
+    <if_group>sysmon_eid1_detections</if_group>
+    <field name="win.eventdata.commandLine" type="pcre2">(?i)(.*(ipconfig|netsh|arp|nbtstat|net\s+config).*){2,}</field>
+    <description>T1016: Multiple Chained Network Discovery Commands Detected</description>
+    <mitre>
+      <id>T1016</id>
+    </mitre>
+  </rule>
+    
+</group>
+```
+
+The initial rule triggered on every single execution of a network command, creating immense log noise from benign IT activity; to fix this, I refactored the logic to focus on keyword density.
 
 ### 5. Result
-The result is that the low severity level alerts are replaced by level 10 alerts which have higher visibility in an actual SOC environment and are indicative of Discovery stage of an attack. The below attached log is indicative of it.
+
+#### Before Audit
 
 ![After Rule](../Evidences/T1016-1%20After_Rule.png)
+
+The result is that the low severity level alerts are replaced by level 10 alerts which have higher visibility in an actual SOC environment and are indicative of Discovery stage of an attack. The below attached log is indicative of it.
+
+#### After Audit
+
+![T1016 After Rule Audit image](../Evidences/T1016%20After_Rule_AA.png)
+
+- **Filters out noise**: The new regex (...){2,} requires two or more commands in a single execution, successfully ignoring normal, single-use administrative tasks.
+- **Increases accuracy**: Eliminates the "wall of red" caused by duplicate alerts firing on child processes.
+- **Calibrates severity**: Downgraded to Level 8 (Medium-High) to reflect reconnaissance behavior, preventing SOC alert fatigue while maintaining visibility for threat hunting.
