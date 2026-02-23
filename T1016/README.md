@@ -1,4 +1,4 @@
-# T1016
+# [T1016](https://attack.mitre.org/techniques/T1016/)
 
 It is the MITRE ATT&CK corresponding to **System Network Configuration Discovery**. Adversaries use this technique to discover network configuration settings such as IP and MAC addresses, of systems they have access to or to gather information about remote systems.
 
