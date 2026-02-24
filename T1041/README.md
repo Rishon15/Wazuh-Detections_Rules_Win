@@ -19,6 +19,9 @@ This test simulates an Adversary using native Powershell cmdlet `Invoke-WebReque
 - **Keyword Detection** - The rule targets specific flags like `POST`, `PUT` or `-BODY` while ignoring request like `GET`.
 
 ### 4. Custom Rule
+
+#### Before Audit
+
 ```xml
 <group name="sysmon, exfiltration">
 
@@ -35,9 +38,42 @@ This test simulates an Adversary using native Powershell cmdlet `Invoke-WebReque
 </group>
 ```
 
+#### After Audit
+
+```xml
+<group name="sysmon, exfiltration">
+  <rule id="101300" level="13">
+    <if_group>sysmon_eid1_detections</if_group>
+    <field name="win.eventdata.commandLine" type="pcre2">(?i)Invoke-WebRequest|iwr|curl|wget</field>
+    <field name="win.eventdata.commandLine" type="pcre2">(?i)-Method POST|-Method PUT|-InFile|-Body|-X POST|-X PUT|-d\s+|--data|-F\s+|--form|-T\s+|--upload-file</field>
+    <description>HIGH: Command-Line Data Exfiltration Detected (T1041)</description>
+    <mitre>
+      <id>T1041</id>
+    </mitre>
+  </rule>
+</group><group name="sysmon, exfiltration">
+  <rule id="101300" level="13">
+    <if_group>sysmon_eid1_detections</if_group>
+    <field name="win.eventdata.commandLine" type="pcre2">(?i)Invoke-WebRequest|iwr|curl|wget</field>
+    <field name="win.eventdata.commandLine" type="pcre2">(?i)-Method POST|-Method PUT|-InFile|-Body|-X POST|-X PUT|-d\s+|--data|-F\s+|--form|-T\s+|--upload-file</field>
+    <description>HIGH: Command-Line Data Exfiltration Detected (T1041)</description>
+    <mitre>
+      <id>T1041</id>
+    </mitre>
+  </rule>
+</group>
+```
+
 ### 5. Result
 
 ![T1041 After Rule image](../Evidences/T1041%20After_Rule.png)
 
+#### Before Audit
+
 - **Precise Detection**: The new rule successfully ignored the "Process Tree" noise and focuses on the command arguments.
 - **Resilience**: Unlike the default rules, this detection logic works regardless of whether the command is run via a script, a batch file, or manually by a hands-on-keyboard attacker, closing the detection gap for "Living off the Land" exfiltration.
+
+#### After Audit
+
+- **Evasion prevention** - Expanded regex to include native curl.exe parameters (-X, --data, -F) to catch attackers bypassing PowerShell aliases.
+- **Severity validation** - Confirmed Level 13 severity to appropriately flag the critical, late-stage impact of data exfiltration.
