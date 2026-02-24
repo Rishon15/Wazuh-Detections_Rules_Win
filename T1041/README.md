@@ -51,16 +51,6 @@ This test simulates an Adversary using native Powershell cmdlet `Invoke-WebReque
       <id>T1041</id>
     </mitre>
   </rule>
-</group><group name="sysmon, exfiltration">
-  <rule id="101300" level="13">
-    <if_group>sysmon_eid1_detections</if_group>
-    <field name="win.eventdata.commandLine" type="pcre2">(?i)Invoke-WebRequest|iwr|curl|wget</field>
-    <field name="win.eventdata.commandLine" type="pcre2">(?i)-Method POST|-Method PUT|-InFile|-Body|-X POST|-X PUT|-d\s+|--data|-F\s+|--form|-T\s+|--upload-file</field>
-    <description>HIGH: Command-Line Data Exfiltration Detected (T1041)</description>
-    <mitre>
-      <id>T1041</id>
-    </mitre>
-  </rule>
 </group>
 ```
 
