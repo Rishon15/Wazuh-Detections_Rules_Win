@@ -53,8 +53,6 @@ This test simulates an adversary clearing previously generated logs or any other
 
 #### After Audit
 
-After Audit
-
 - **Severity validation (No changes required)** - Maintained the Level 12 severity. While log clearing is a critical anti-forensics technique, retaining it at Level 12 accounts for the rare but legitimate edge case of system administrators manually clearing bloated application/system logs during troubleshooting.
 
 - **Precise parameter matching** - The targeted `\scl\s` regex accurately isolates the exact "clear log" execution parameter, preventing false positives from standard, benign wevtutil query commands.
