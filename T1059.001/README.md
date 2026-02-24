@@ -54,5 +54,13 @@ This test simulates an adversary abusing PowerShell commands and scripts for exe
 
 ![T1059.001 After Rule Image](../Evidences/T1059.001%20After_Rule.png)
 
+#### Before Audit
+
 - **High-Fidelity Detection**: Rule 100401 successfully triggered a Level 14 alert, perfectly identifying the highly suspicious, long-form obfuscated payload.
 - **Resilient Engineering**: The regex design accounts for multiple syntax variations (such as -e, -enc, quotes, and padding).
+
+#### After Audit
+
+- **Audit validation (No changes required)** - Retained the original parent-child logic, as the 50+ character threshold already perfectly balances administrative visibility (Level 7) with critical threat escalation (Level 14) without generating false positives.
+- **High-fidelity detection** - Rule 100401 successfully triggered the Level 14 alert, flawlessly identifying the highly suspicious, long-form obfuscated payload.
+- **Resilient engineering** - The existing regex design inherently accounts for multiple attacker syntax variations (such as -e, -enc, quotes, and padding).
