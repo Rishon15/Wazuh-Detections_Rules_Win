@@ -91,48 +91,6 @@ To convert raw data to high-fidelity alerts, I engineered a custom Wazuh rule. I
 </group>
 ```
 
-```diff
-- <rule id="100800" level="10">
--     <if_group>sysmon_event_10</if_group>
--     <field name="win.eventdata.targetImage" type="pcre2">(?i)lsass\.exe</field>
--     <field name="win.eventdata.sourceImage" type="pcre2">(?i)python\.exe|pypykatz</field>
--     <description>CRITICAL: Python Script Accessed LSASS Memory (Credential Dumping)</description>
--     <mitre>
--         <id>T1003.001</id>
--     </mitre>
-- </rule>
-+ <group name="sysmon, credential_access">
-+     <rule id="100800" level="13">
-+        <if_group>sysmon_event_10</if_group>
-+        <field name="win.eventdata.targetImage" type="pcre2">(?i)lsass\.exe</field>
-+         <field name="win.eventdata.sourceImage" type="pcre2">(?i)python\.exe</field>
-+         <description>HIGH: Python Script Accessed LSASS Memory (Credential Dumping)</description>
-+         <mitre>
-+             <id>T1003.001</id>
-+         </mitre>
-+     </rule>
-+ 
-+     <rule id="100801" level="14" timeframe="60">
-+         <if_sid>100800</if_sid>
-+         <if_matched_sid>92052</if_matched_sid>
-+         <description>HIGH: Correlated event, Malicious process and lsass accessed(Credential Dumping)</description>
-+         <mitre>
-+             <id>T1003.001</id>
-+         </mitre>
-+     </rule>
-+ 
-+     <rule id="100802" level="15">
-+         <if_group>sysmon_event_10</if_group>
-+         <field name="win.eventdata.targetImage" type="pcre2">(?i)lsass\.exe</field>
-+         <field name="win.eventdata.sourceImage" type="pcre2">(?i)pypykatz</field>
-+         <description>CRITICAL: Pypykatz Credential Dumping Tool Detected Accessing LSASS</description>
-+         <mitre>
-+             <id>T1003.001</id>
-+         </mitre>
-+     </rule>
-+ </group>
-```
-
 ### 5. Result
 
 #### Before Audit
