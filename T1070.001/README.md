@@ -46,5 +46,15 @@ This test simulates an adversary clearing previously generated logs or any other
 
 ![T1070.001 After_Rule image](../Evidences/T1070.001%20After_Rule.png)
 
+#### Before Audit
+
 - **High Fidelity**: The rule successfully triggered a Level 12 Critical Alert specifically on the wevtutil cl command.
 - **Context**: Unlike the default alert (Rule 63104) that indicates that logs were cleared, this new alert captures the full command line, confirming exactly which log was targeted ("System") and how it was executed.
+
+#### After Audit
+
+After Audit
+
+- **Severity validation (No changes required)** - Maintained the Level 12 severity. While log clearing is a critical anti-forensics technique, retaining it at Level 12 accounts for the rare but legitimate edge case of system administrators manually clearing bloated application/system logs during troubleshooting.
+
+- **Precise parameter matching** - The targeted `\scl\s` regex accurately isolates the exact "clear log" execution parameter, preventing false positives from standard, benign wevtutil query commands.
