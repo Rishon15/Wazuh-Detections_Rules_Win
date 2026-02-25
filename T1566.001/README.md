@@ -23,6 +23,8 @@ This test simulates a user opening a malicious attachment (e.g., a Word document
 
 ### 4. Custom Rule
 
+#### Before Audit
+
 ```xml
 <group name="sysmon, initial_access">
 
@@ -40,9 +42,36 @@ This test simulates a user opening a malicious attachment (e.g., a Word document
 </group>
 ```
 
+#### After Audit
+
+```xml
+<group name="sysmon, initial_access">
+
+  <rule id="100300" level="15">
+    <if_group>sysmon_eid1_detections</if_group>
+    <field name="win.eventdata.originalFileName" type="pcre2">(?i)PowerShell\.EXE|pwsh\.exe</field>
+    <field name="win.eventdata.commandLine" type="pcre2">(?i)iex|Invoke-Expression</field>
+    <field name="win.eventdata.commandLine" type="pcre2">(?i)iwr|curl|wget|Invoke-WebRequest|WebClient</field>
+    <field name="win.eventdata.commandLine" type="pcre2">(?i)http://|https://</field>
+    <description>CRITICAL: PowerShell Downloading and Executing Remote Payload (Phishing/Dropper)</description>
+    <mitre>
+      <id>T1566.001</id>
+    </mitre>
+  </rule>
+
+</group>
+```
 ### 5. Result
+
+#### Before Audit
 
 ![T1566.001 After Rule image](../Evidences/T1566.001%20After_rule.png)
 
 - **Critical Detection**: The new rule successfully identified the malicious download cradle and triggered a Level 15 alert, prioritizing the incident for immediate response.
 - **Comprehensive Coverage**: The attack generated two high-fidelity alerts: one for the download (Rule 101900) and one for the file drop (Rule 92207), providing a complete picture of the intrusion attempt.
+
+#### After Audit
+
+- **Evasion robustness** - Decoupled the regex sequence into stacked, order-agnostic <field> conditions. This ensures the rule catches the download-and-execute behavior regardless of syntax structure (e.g., catching iwr URL | iex pipeline bypasses).
+
+- **Severity validation** - Retained Level 15 (Critical) severity, as the dynamic, memory-based execution of unverified remote scripts via terminal is highly indicative of active dropper/phishing payload execution.
