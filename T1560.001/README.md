@@ -23,10 +23,12 @@ This test simulates the use of `makecab.exe` which is a Windows Utility used to 
 
 ### 4. Custom Rule
 
+#### Before Audit
+
 ```xml
 <group name="sysmon, collection">
 
-  <rule id="101500" level="12">
+  <rule id="101100" level="12">
     <if_group>sysmon_eid1_detections</if_group>
     
     <field name="win.eventdata.originalFileName" type="pcre2">(?i)makecab\.exe</field>
@@ -39,7 +41,7 @@ This test simulates the use of `makecab.exe` which is a Windows Utility used to 
     </mitre>
   </rule>
 
-  <rule id="101501" level="12">
+  <rule id="101101" level="12">
     <if_group>sysmon_eid1_detections</if_group>
     
     <field name="win.eventdata.originalFileName" type="pcre2">(?i)makecab\.exe</field>
@@ -55,9 +57,55 @@ This test simulates the use of `makecab.exe` which is a Windows Utility used to 
 </group>
 ```
 
+#### After Audit
+
+```xml
+<group name="sysmon, collection">
+
+  <rule id="101100" level="8">
+    <if_group>sysmon_eid1_detections</if_group>
+    <field name="win.eventdata.originalFileName" type="pcre2">(?i)makecab\.exe</field>
+    <field name="win.eventdata.commandLine" type="pcre2">(?i)Users|Documents|Desktop|AppData|Temp|Public|ProgramData</field>
+    <description>WARNING: Data Staging via Makecab (Suspicious Target Path)</description>
+    <mitre>
+      <id>T1560.001</id>
+    </mitre>
+  </rule>
+
+  <rule id="101101" level="8">
+    <if_group>sysmon_eid1_detections</if_group>
+    <field name="win.eventdata.originalFileName" type="pcre2">(?i)makecab\.exe</field>
+    <field name="win.eventdata.currentDirectory" type="pcre2">(?i)Temp|ProgramData|AppData|Public</field>
+    <description>WARNING: Data Staging via Makecab (Suspicious Execution Directory)</description>
+    <mitre>
+      <id>T1560.001</id>
+    </mitre>
+  </rule>
+
+  <rule id="101102" level="12">
+    <if_sid>101100</if_sid>
+    <field name="win.eventdata.currentDirectory" type="pcre2">(?i)Temp|ProgramData|AppData|Public</field>
+    <description>HIGH: Confirmed Data Staging (Suspicious Target AND Execution Directory)</description>
+    <mitre>
+      <id>T1560.001</id>
+    </mitre>
+  </rule>
+
+</group>
+```
+
 ### 5. Result
+
+#### Before Audit
 
 ![T1560.001 After Rule image](../Evidences/T1560.001%20After_Rule.png)
 
-- **Scenario A** - Rule 101500 fires based on the CommandLine targeting the Sensitive folder/data.
-- **Scenario B** - Rule 101501 fired based on the CurrentDirectory from which the attack was executed.
+- **Scenario A** - Rule 101100 fires based on the CommandLine targeting the Sensitive folder/data.
+- **Scenario B** - Rule 101101 fired based on the CurrentDirectory from which the attack was executed.
+
+#### After Audit
+
+![T1560.001 After Rule Audit Image](../Evidences/T1560.001%20After_Rule_AA.png)
+
+- **Matrix correlation logic** - Restructured the detection into a 3-rule matrix to elevate severity based on intersecting behaviors (Risk Scoring) without creating parent/child blind spots.
+- **Coverage retention** - Maintained parallel base rules (Level 8) to ensure isolated visibility if an adversary utilizes a suspicious target path or a suspicious execution directory independently.
