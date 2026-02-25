@@ -20,6 +20,9 @@ This test simulates an adversary running a command that deletes any shadow copy 
 - **Prerequisites** - Investigation confirmed that, to create a shadow copy in windows 10/11 `wmic.exe` must be used, the whole command looks like this `wmic shadowcopy call create Volume='C:\'`.
 
 ### 4. Custom Rule
+
+#### Before Audit
+
 ```xml
 <group name="sysmon, impact">
 
@@ -42,9 +45,43 @@ This test simulates an adversary running a command that deletes any shadow copy 
 </group>
 ```
 
+#### After Audit
+
+```xml
+<rule id="101400" level="12">
+    <if_group>sysmon_eid1_detections</if_group>
+    <field name="win.eventdata.originalFileName" type="pcre2">(?i)vssadmin\.exe</field>
+    <field name="win.eventdata.commandLine" type="pcre2">(?i)Delete.*Shadows</field>
+    <description>HIGH: Volume Shadow Copy Deletion Detected (T1490)</description>
+    <mitre>
+      <id>T1490</id>
+    </mitre>
+  </rule>
+
+  <rule id="101401" level="15">
+    <if_sid>101400</if_sid>
+    <field name="win.eventdata.commandLine" type="pcre2">(?i)/quiet|/qn</field>
+    <description>CRITICAL: Silent Volume Shadow Copy Deletion - Ransomware Behavior Detected (T1490)</description>
+    <mitre>
+      <id>T1490</id>
+    </mitre>
+  </rule>
+```
+
 ### 5. Result
+
+#### Before Audit
 
 ![T1490 After Rule image](../Evidences/T1490%20After_Rule.png)
 
-- **Critical Alerting**: Upon execution of the attack from a non-standard directory, the system generated a Level 15 (Critical) alert, correctly identifying the behavior as "Ransomware Behavior" rather than generic command execution.
-- **Noise Reduction**: The implementation of the Negation Logic successfully filtered out standard administrative noise. By allowing execution strictly from System32, we ensured that the SOC is only alerted when the behavior deviates from the established baseline, significantly reducing False Positives.
+- **Critical Alerting** - Upon execution of the attack from a non-standard directory, the system generated a Level 15 (Critical) alert, correctly identifying the behavior as "Ransomware Behavior" rather than generic command execution.
+- **Noise Reduction** - The implementation of the Negation Logic successfully filtered out standard administrative noise. By allowing execution strictly from System32, we ensured that the SOC is only alerted when the behavior deviates from the established baseline, significantly reducing False Positives.
+
+#### After Audit
+
+![T1490 After Rule Audit](../Evidences/T1490%20After_Rule_AA.png)
+
+- **Logic decoupling** - Separated the standard deletion command and the /quiet evasion flags into a parent-child rule structure to prevent noisy ransomware from bypassing the AND condition logic.
+- **Evasion robustness** - Removed the directory restriction (negate="yes" for System32), recognizing that advanced malware and injected processes frequently execute from standard system paths.
+
+- **Severity calibration** - Assigned Level 12 (High Importance) to the base deletion to account for potential administrative maintenance, while reserving Level 15 (Critical) exclusively for evasive, silent executions highly indicative of active ransomware.
