@@ -22,6 +22,8 @@ This test simulates bypassing "User Access Control" by using `reg.exe` to modify
 
 ### 4. Custom Rule
 
+#### Before Audit
+
 ```xml
 <group name="sysmon, privilege_escalation">
 
@@ -47,9 +49,56 @@ This test simulates bypassing "User Access Control" by using `reg.exe` to modify
 </group>
 ```
 
+#### After Audit
+
+```xml
+<group name="sysmon, privilege_escalation">
+
+  <rule id="100600" level="12">
+    <if_group>sysmon_eid1_detections</if_group>
+    <field name="win.eventdata.originalFileName" type="pcre2">(?i)reg\.exe|powershell\.exe|pwsh\.exe</field>
+    <field name="win.eventdata.commandLine" type="pcre2">(?i)mscfile.*shell.*open.*command</field>
+    <description>HIGH: UAC Bypass Registry Key Modification Setup (T1548.002)</description>
+    <mitre>
+      <id>T1548.002</id>
+    </mitre>
+  </rule>
+
+  <rule id="100601" level="8">
+    <if_group>sysmon_eid1_detections</if_group>
+    <field name="win.eventdata.parentImage" type="pcre2">(?i)cmd\.exe|powershell\.exe</field>
+    <field name="win.eventdata.commandLine" type="pcre2">(?i)\/c\seventvwr\.msc</field>
+    <description>WARNING: Suspicious Launch of eventvwr.msc via Terminal</description>
+    <mitre>
+      <id>T1548.002</id>
+    </mitre>
+  </rule>
+
+  <rule id="100602" level="15" timeframe="120">
+    <if_sid>100601</if_sid>
+    <if_matched_sid>100600</if_matched_sid>
+    <description>CRITICAL: Successful UAC Bypass Execution Confirmed (Registry + EventVwr Chained)</description>
+    <mitre>
+      <id>T1548.002</id>
+    </mitre>
+  </rule>
+
+</group>
+```
+
 ### 5. Result
+
+#### Before Audit
 
 ![T1548.002 After_Rule image](../Evidences/T1548.002%20After_Rule.png)
 
 - Upon executing the attack, **Level 15** alerts are generated that highlight not only the severity of the event but also the intent.
 - Adding these rules helped classify the alerts with their actual severity but also targets the "behavior" reducing the amount of "False Positives".
+
+#### After Audit
+
+![T1548.002 After Rule Audit Image](../Evidences/T1548.002%20After_Rule_AA.png)
+
+- **Cross-binary scoping** - Added reg.exe, powershell.exe, and pwsh.exe to the registry modification rule to reduce noise while preventing blind spots from terminal-based evasion.
+- **Attack chain correlation** - Restructured detection into a 3-tier composite logic, requiring the registry setup to immediately precede the eventvwr.msc execution within a 120-second timeframe.
+- **Severity calibration** - Calibrated isolated setup and execution events to Level 12 and Level 8 to maintain visibility without alert fatigue, reserving the Level 15 (Critical) alert strictly for the confirmed UAC bypass chain.
