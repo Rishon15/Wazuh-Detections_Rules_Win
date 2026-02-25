@@ -22,6 +22,8 @@ This test simulates an attacker running a windows cmdlet to query `Win32_PnPEnti
 
 ### 4. Custom Rule
 
+#### Before Audit
+
 ```xml
 <group name="sysmon, recon">
 
@@ -38,9 +40,36 @@ This test simulates an attacker running a windows cmdlet to query `Win32_PnPEnti
 </group>
 ```
 
+#### After Audit
+
+```xml
+<group name="sysmon, recon">
+
+  <rule id="100100" level="8">
+    <if_group>sysmon_eid1_detections</if_group>
+    <field name="win.eventdata.originalFileName" type="pcre2">(?i)PowerShell\.EXE|pwsh\.exe</field>
+    <field name="win.eventdata.commandLine" type="pcre2">(?i)Get-CimInstance|Get-WmiObject|gwmi|gcim</field>
+    <field name="win.eventdata.commandLine" type="pcre2">(?i)Win32_PnPEntity</field>
+    <field name="win.eventdata.commandLine" type="pcre2">(?i)Camera|Image</field>
+    <description>WARNING: Host Hardware Reconnaissance (Camera/Image Device Enumeration)</description>
+    <mitre>
+      <id>T1592.001</id>
+    </mitre>
+  </rule>
+
+</group>
+```
+
 ### 5. Result
+
+#### Before Audit
 
 ![T1592.001 After Rule Image](../Evidences/T1592.001%20After_Rule.png)
 
 - **Detection**: This rule will instantly flag the specific PowerShell command used in this test.
 - **Context**: By setting it to Level 8, we acknowledge that it is suspicious but not an immediate emergency.
+
+#### After Audit
+
+- **Evasion robustness** - Transitioned to stacked, order-agnostic <field> logic to prevent PowerShell parameter shuffling or pipeline manipulation from bypassing the regex sequence.
+- **Severity validation** - Maintained Level 8 (Warning) severity. Hardware enumeration is a classic reconnaissance precursor, but warrants a medium-tier alert to avoid noise from standard IT asset management and inventory scripts.
