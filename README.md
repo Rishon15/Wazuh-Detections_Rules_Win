@@ -1,8 +1,8 @@
 # Wazuh Detection Lab
 
-**Project Status:** - Active.<br>
+**Project Status:** - Completed.<br>
 **Focus:** - Windows Security, Log Analysis and Custom Rule Engineering.<br>
-**Tools:** - Wazuh, Sysmon, Atomic Red Team and Powershell.<br>
+**Tools:** - Wazuh, Sysmon, Atomic Red Team and Powershell.
 
 <br>
 
