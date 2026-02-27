@@ -27,18 +27,20 @@ For each MITRE ATT&CK scenario, strict engineering lifecycles are followed.
 
 | Tactic | Technique | Description |
 |---|---|---|
+| Reconnaissance | T1592 | Reconnaissance using Windows Cmdlet |
+| Reconnaissance | T1592 | Reconnaissance via Windows Cmdlet |
+| Initial Access | T1566 | Initial Access via Phishing |
+| Execution | T1059 | Execution via `Invoke-Command` Cmdlet |
+| Persistence | T1053 | Persistence via Scheduled Task |
+| Privilege Escalation | T1548 | User Access Control Bypass |
+| Defense Evasion | T1070 | Clearing Windows Event Logs |
+| Credential Access | T1003 | Credential Dumping using pypykatz |
 | Discovery | T1016 | Network & System Configuration Discovery |
 | Lateral Movement | T1021 | Remote Service Login |
-| Credential Access | T1003 | Credential Dumping using pypykatz |
-| Command & Control | T1071 | C2 via web Protocols |
-| Persistence | T1053 | Persistence via Scheduled Task |
-| Defense Evasion | T1070 | Clearing Windows Event Logs |
-| Privilege Escalation | T1548 | User Access Control Bypass |
-| Impact | T1490 | Clearing Backups using Windows Binaries |
 | Collection | T1560 | Data Obfuscation & Compression using Windows Binary |
+| Command & Control | T1071 | C2 via web Protocols |
 | Exfiltration | T1041 | Data Exfiltration using Windows Binary |
-| Reconnaissance | T1592 | Reconnaissance using Windows Cmdlet |
-| Initial Access | T1566 | Initial Access via Phishing |
+| Impact | T1490 | Clearing Backups using Windows Binaries |
 
 <br>
 
