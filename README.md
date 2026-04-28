@@ -27,7 +27,6 @@ For each MITRE ATT&CK scenario, strict engineering lifecycles are followed.
 
 | Tactic | Technique | Description |
 |---|---|---|
-| Reconnaissance | T1592 | Reconnaissance using Windows Cmdlet |
 | Reconnaissance | T1592 | Reconnaissance via Windows Cmdlet |
 | Initial Access | T1566 | Initial Access via Phishing |
 | Execution | T1059 | Execution via `Invoke-Command` Cmdlet |
